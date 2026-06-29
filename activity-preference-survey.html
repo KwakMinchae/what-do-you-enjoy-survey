@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Preference Survey</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f9f7f4;
+    --card: #ffffff;
+    --text: #1a1a1a;
+    --text-sub: #5a5a5a;
+    --text-hint: #8a8a8a;
+    --border: #e0ddd8;
+    --accent: #3d6b4f;
+    --accent-light: #edf5f0;
+    --accent-hover: #2f5240;
+    --purple: #5b4bb0;
+    --purple-light: #f0eefa;
+    --coral: #c95535;
+    --coral-light: #fdf0ec;
+    --teal: #1d7a6a;
+    --teal-light: #e8f7f4;
+    --amber: #b06a10;
+    --amber-light: #fdf3e3;
+    --shadow: 0 2px 12px rgba(0,0,0,0.07);
+    --radius: 16px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111110;
+      --card: #1c1c1a;
+      --text: #e8e6df;
+      --text-sub: #9a9890;
+      --text-hint: #6a6860;
+      --border: #2e2e2a;
+      --accent: #5a9e72;
+      --accent-light: #1a2e22;
+      --accent-hover: #6eb886;
+      --purple: #8f7ee0;
+      --purple-light: #1e1a36;
+      --coral: #e07050;
+      --coral-light: #2e1a14;
+      --teal: #3db89e;
+      --teal-light: #0e2822;
+      --amber: #d4924a;
+      --amber-light: #2a1e0a;
+      --shadow: 0 2px 16px rgba(0,0,0,0.3);
+    }
+  }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* LANGUAGE BAR */
+  .lang-bar {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow);
+  }
+
+  .lang-btn {
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--text-sub);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-family: inherit;
+  }
+
+  .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .lang-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 52px 24px 36px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .hero-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--accent-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 30px;
+  }
+
+  .hero h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .hero p {
+    font-size: 17px;
+    color: var(--text-sub);
+    line-height: 1.6;
+    max-width: 480px;
+    margin: 0 auto 28px;
+  }
+
+  .start-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 16px 40px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.1s;
+    font-family: inherit;
+    box-shadow: 0 4px 16px rgba(61,107,79,0.25);
+  }
+
+  .start-btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+  .start-btn:active { transform: translateY(0); }
+
+  /* PROGRESS */
+  .progress-wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 20px 24px 0;
+  }
+
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-hint);
+    margin-bottom: 8px;
+  }
+
+  .progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 6px;
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* DIMENSION LABEL */
+  .dim-label {
+    max-width: 680px;
+    margin: 16px auto 0;
+    padding: 0 24px;
+  }
+
+  .dim-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .dim-autonomy  { background: var(--purple-light); color: var(--purple); }
+  .dim-competence { background: var(--coral-light);  color: var(--coral);  }
+  .dim-relatedness { background: var(--teal-light);  color: var(--teal);   }
+
+  /* QUESTION CARD */
+  .q-card {
+    max-width: 680px;
+    margin: 16px auto;
+    padding: 0 24px;
+  }
+
+  .q-inner {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 28px 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .q-num {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-hint);
+    margin-bottom: 10px;
+  }
+
+  .q-text {
+    font-size: 21px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: 28px;
+  }
+
+  /* LIKERT */
+  .likert {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .likert-option { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+  .likert-option input[type="radio"] { display: none; }
+
+  .likert-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: all 0.18s;
+    position: relative;
+  }
+
+  .likert-btn:hover { border-color: var(--accent); transform: scale(1.08); }
+
+  .likert-option input:checked + .likert-btn {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(61,107,79,0.3);
+    transform: scale(1.12);
+  }
+
+  .likert-label {
+    font-size: 11px;
+    color: var(--text-hint);
+    text-align: center;
+    line-height: 1.3;
+    max-width: 56px;
+  }
+
+  .likert-ends {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-hint);
+    margin-top: 4px;
+    padding: 0 4px;
+  }
+
+  /* NAV BUTTONS */
+  .q-nav {
+    max-width: 680px;
+    margin: 0 auto 40px;
+    padding: 8px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nav-btn {
+    border-radius: 50px;
+    padding: 13px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--text-sub);
+    transition: all 0.18s;
+    font-family: inherit;
+  }
+
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .nav-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 4px 12px rgba(61,107,79,0.25); }
+  .nav-btn.primary:hover { background: var(--accent-hover); }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* RESULT */
+  .result-wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+  }
+
+  .result-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .result-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 50px;
+    padding: 10px 22px;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+
+  .result-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .result-desc {
+    font-size: 17px;
+    color: var(--text-sub);
+    line-height: 1.6;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  /* SCORE BARS */
+  .score-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .score-card h3 { font-size: 14px; font-weight: 600; color: var(--text-sub); margin-bottom: 16px; letter-spacing: 0.04em; }
+
+  .score-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .score-row:last-child { margin-bottom: 0; }
+
+  .score-label {
+    width: 120px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    flex-shrink: 0;
+  }
+
+  .score-bar-wrap {
+    flex: 1;
+    height: 10px;
+    background: var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 1s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .score-pct {
+    width: 36px;
+    text-align: right;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* ACTIVITIES */
+  .activities-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .activities-card h3 { font-size: 14px; font-weight: 600; color: var(--text-sub); margin-bottom: 16px; letter-spacing: 0.04em; }
+
+  .activity-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .chip {
+    border-radius: 50px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1.5px solid transparent;
+  }
+
+  /* CITATION */
+  .citation-card {
+    background: var(--accent-light);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+  }
+
+  .citation-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .citation-card p {
+    font-size: 13px;
+    color: var(--text-sub);
+    line-height: 1.6;
+    margin-bottom: 6px;
+  }
+
+  .citation-card p:last-child { margin-bottom: 0; }
+
+  /* RETAKE */
+  .retake-btn {
+    display: block;
+    margin: 0 auto;
+    background: transparent;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    border-radius: 50px;
+    padding: 13px 36px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.18s;
+  }
+
+  .retake-btn:hover { background: var(--accent); color: #fff; }
+
+  /* PAGE VISIBILITY */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ANIMATION */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-inner, .result-header, .score-card, .activities-card, .citation-card {
+    animation: fadeUp 0.3s ease forwards;
+  }
+
+  /* MOBILE */
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 22px; }
+    .q-text { font-size: 18px; }
+    .likert-btn { width: 44px; height: 44px; font-size: 17px; }
+    .result-title { font-size: 26px; }
+    .score-label { width: 90px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LANGUAGE BAR -->
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('en')">English</button>
+  <button class="lang-btn" onclick="setLang('zh')">中文</button>
+  <button class="lang-btn" onclick="setLang('ms')">Bahasa Melayu</button>
+  <button class="lang-btn" onclick="setLang('ta')">தமிழ்</button>
+</div>
+
+<!-- PAGE: INTRO -->
+<div id="page-intro" class="page active">
+  <div class="hero">
+    <div class="hero-icon">🌱</div>
+    <h1 id="intro-title">What Do You Enjoy?</h1>
+    <p id="intro-desc">A short survey to help us plan activities that you will truly enjoy. There are no right or wrong answers — just be honest!</p>
+    <button class="start-btn" onclick="startSurvey()" id="intro-btn">Begin Survey</button>
+  </div>
+</div>
+
+<!-- PAGE: QUESTIONS -->
+<div id="page-survey" class="page">
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span id="q-counter">Question 1 of 15</span>
+      <span id="q-pct">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <div class="dim-label">
+    <span class="dim-pill" id="dim-pill">🎨 Creativity</span>
+  </div>
+
+  <div class="q-card">
+    <div class="q-inner">
+      <div class="q-num" id="q-num">QUESTION 1</div>
+      <div class="q-text" id="q-text">I enjoy making things with my hands.</div>
+
+      <div class="likert" id="likert-options">
+        <div class="likert-option">
+          <input type="radio" name="answer" id="r1" value="1">
+          <label class="likert-btn" for="r1">😕</label>
+          <div class="likert-label" id="lbl-1">Disagree</div>
+        </div>
+        <div class="likert-option">
+          <input type="radio" name="answer" id="r2" value="2">
+          <label class="likert-btn" for="r2">😐</label>
+          <div class="likert-label" id="lbl-2">Somewhat disagree</div>
+        </div>
+        <div class="likert-option">
+          <input type="radio" name="answer" id="r3" value="3">
+          <label class="likert-btn" for="r3">🙂</label>
+          <div class="likert-label" id="lbl-3">Neutral</div>
+        </div>
+        <div class="likert-option">
+          <input type="radio" name="answer" id="r4" value="4">
+          <label class="likert-btn" for="r4">😊</label>
+          <div class="likert-label" id="lbl-4">Somewhat agree</div>
+        </div>
+        <div class="likert-option">
+          <input type="radio" name="answer" id="r5" value="5">
+          <label class="likert-btn" for="r5">😄</label>
+          <div class="likert-label" id="lbl-5">Agree</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-nav">
+    <button class="nav-btn" id="btn-back" onclick="goBack()" disabled id="intro-btn">← <span id="nav-back-lbl">Back</span></button>
+    <button class="nav-btn primary" id="btn-next" onclick="goNext()" disabled><span id="nav-next-lbl">Next</span> →</button>
+  </div>
+</div>
+
+<!-- PAGE: RESULTS -->
+<div id="page-result" class="page">
+  <div class="result-wrap">
+    <div class="result-header">
+      <div class="result-badge" id="result-badge">🎨 The Creator</div>
+      <div class="result-title" id="result-title">The Creator</div>
+      <div class="result-desc" id="result-desc">You love making, building, and expressing yourself.</div>
+    </div>
+
+    <div class="score-card">
+      <h3 id="score-heading">YOUR SCORES</h3>
+      <div class="score-row">
+        <div class="score-label" id="dim-a-label">Creativity</div>
+        <div class="score-bar-wrap"><div class="score-bar-fill" id="bar-a" style="background:var(--purple);width:0%"></div></div>
+        <div class="score-pct" id="pct-a">0%</div>
+      </div>
+      <div class="score-row">
+        <div class="score-label" id="dim-c-label">Learning</div>
+        <div class="score-bar-wrap"><div class="score-bar-fill" id="bar-c" style="background:var(--coral);width:0%"></div></div>
+        <div class="score-pct" id="pct-c">0%</div>
+      </div>
+      <div class="score-row">
+        <div class="score-label" id="dim-r-label">Social</div>
+        <div class="score-bar-wrap"><div class="score-bar-fill" id="bar-r" style="background:var(--teal);width:0%"></div></div>
+        <div class="score-pct" id="pct-r">0%</div>
+      </div>
+    </div>
+
+    <div class="activities-card">
+      <h3 id="act-heading">SUGGESTED ACTIVITIES</h3>
+      <div class="activity-chips" id="activity-chips"></div>
+    </div>
+
+    <div class="citation-card">
+      <h3 id="cite-heading">Based on Peer-Reviewed Research</h3>
+      <p id="cite-1">Deci, E. L., & Ryan, R. M. (1985). <em>Self-determination and intrinsic motivation in human behavior.</em> Plenum Press.</p>
+      <p id="cite-2">Deci, E. L., & Ryan, R. M. (2000). The "what" and "why" of goal pursuits: Human needs and the self-determination of behavior. <em>Psychological Inquiry, 11</em>(4), 227–268.</p>
+      <p id="cite-3">Dattilo, J., et al. (2018). Using Self-Determination Theory to understand challenges to aging, adaptation, and leisure. <em>Activities, Adaptation and Aging, 42</em>(2), 85–103.</p>
+      <p id="cite-4">Longo, Y., et al. (2023). Is the Behavioral Regulation in Exercise Questionnaire a valid measure in older people? <em>PMC10606683</em>.</p>
+    </div>
+
+    <button class="retake-btn" onclick="retake()" id="retake-btn">Take Again</button>
+  </div>
+</div>
+
+<script>
+const LANGS = {
+  en: {
+    introTitle: "What Do You Enjoy?",
+    introDesc: "A short survey to help us plan activities that you will truly enjoy. There are no right or wrong answers — just be honest!",
+    introBtn: "Begin Survey",
+    qCounter: (n, t) => `Question ${n} of ${t}`,
+    qNum: n => `QUESTION ${n}`,
+    navBack: "Back",
+    navNext: "Next",
+    navFinish: "See My Result",
+    dimLabels: ["🎨 Creativity", "🧠 Learning", "🤝 Social"],
+    likertLabels: ["Disagree", "Somewhat disagree", "Neutral", "Somewhat agree", "Agree"],
+    scoreHeading: "YOUR SCORES",
+    dimNames: ["Creativity", "Learning", "Social"],
+    actHeading: "SUGGESTED ACTIVITIES FOR YOU",
+    citeHeading: "Based on Peer-Reviewed Research",
+    retakeBtn: "Take Again",
+    profiles: {
+      A:  { badge: "🎨 The Creator",           title: "The Creator",             desc: "You love to make, build, and express yourself. Activities that give you creative freedom are where you shine." },
+      C:  { badge: "🧠 The Learner",            title: "The Learner",             desc: "You enjoy picking up new things and feeling a sense of achievement. Stimulating activities keep you engaged." },
+      R:  { badge: "🤝 The Social Bee",         title: "The Social Bee",          desc: "Being around people and sharing moments is what you love most. Group activities are your happy place." },
+      AR: { badge: "🎨🤝 The Social Maker",     title: "The Social Maker",        desc: "You enjoy creating alongside others. Collaborative hands-on activities bring out the best in you." },
+      CR: { badge: "🧠🤝 The Social Learner",   title: "The Social Learner",      desc: "You love learning in a group setting. Sharing knowledge and ideas with others motivates you." },
+      AC: { badge: "🎨🧠 The Achiever",         title: "The Independent Achiever",desc: "You enjoy creative challenges you can master on your own. You take pride in what you accomplish." },
+      ALL:{ badge: "🌟 All-Rounder",            title: "The All-Rounder",         desc: "You enjoy all kinds of activities equally. Any session is a good session for you!" }
+    },
+    activities: {
+      A:  ["Crafts & origami","Painting & drawing","Cooking & baking","Flower arrangement","Knitting & sewing"],
+      C:  ["Memory games","Health & wellness talks","Board games","Trivia quizzes","Simple digital skills"],
+      R:  ["Group games","Singing together","Storytelling circles","Community outings","Light exercise classes"],
+      AR: ["Group cooking","Collaborative crafts","Community art projects","Team building activities","Decorating sessions"],
+      CR: ["Group trivia","Quiz competitions","Sharing health tips","Discussion groups","Learning new skills together"],
+      AC: ["Solo craft with a challenge","Step-by-step cooking","Puzzle solving","Self-paced learning","Origami challenges"],
+      ALL:["Any activity works great!","Crafts, games, or exercise","Mix it up each session","Try something new every week","You are very adaptable!"]
+    }
+  },
+  zh: {
+    introTitle: "您喜欢什么活动？",
+    introDesc: "这是一份简短的问卷，帮助我们为您安排真正喜欢的活动。没有对错之分，请放心作答！",
+    introBtn: "开始问卷",
+    qCounter: (n, t) => `第 ${n} / ${t} 题`,
+    qNum: n => `第 ${n} 题`,
+    navBack: "上一题",
+    navNext: "下一题",
+    navFinish: "查看结果",
+    dimLabels: ["🎨 创意表达", "🧠 学习探索", "🤝 社交互动"],
+    likertLabels: ["不同意", "有点不同意", "一般", "有点同意", "同意"],
+    scoreHeading: "您的得分",
+    dimNames: ["创意表达", "学习探索", "社交互动"],
+    actHeading: "为您推荐的活动",
+    citeHeading: "基于同行评审研究",
+    retakeBtn: "重新作答",
+    profiles: {
+      A:  { badge: "🎨 创意达人", title: "创意达人", desc: "您喜欢动手创作，享受表达自我的乐趣。有创意空间的活动最适合您。" },
+      C:  { badge: "🧠 好学之人", title: "好学之人", desc: "您喜欢学习新知识，享受完成挑战后的成就感。充实的活动让您保持活力。" },
+      R:  { badge: "🤝 社交达人", title: "社交达人", desc: "您喜欢和大家在一起，分享欢乐时光。团体活动是您的最爱。" },
+      AR: { badge: "🎨🤝 共创好手", title: "共创好手", desc: "您喜欢与他人一起创作，协作式的动手活动最能发挥您的优势。" },
+      CR: { badge: "🧠🤝 共学达人", title: "共学达人", desc: "您喜欢在群体中学习，与大家分享知识和想法让您充满动力。" },
+      AC: { badge: "🎨🧠 独立达成者", title: "独立达成者", desc: "您享受独自完成创意挑战，以自己的成就为傲。" },
+      ALL:{ badge: "🌟 全能参与者", title: "全能参与者", desc: "您对各种活动都同样喜欢，任何活动都适合您！" }
+    },
+    activities: {
+      A:  ["手工艺与折纸","绘画与素描","烹饪与烘焙","插花","编织与缝纫"],
+      C:  ["记忆游戏","健康讲座","桌游","知识竞答","简单数字技能"],
+      R:  ["团体游戏","集体唱歌","讲故事分享","社区外出","轻松健身课"],
+      AR: ["团体烹饪","合作手工","社区艺术","团队建设","布置装饰"],
+      CR: ["团体问答","知识竞赛","分享健康贴士","讨论小组","一起学新技能"],
+      AC: ["有挑战的独立手工","步骤式烹饪","拼图","自主学习","折纸挑战"],
+      ALL:["任何活动都适合！","手工、游戏或运动","每次换换花样","每周尝试新事物","您的适应能力很强！"]
+    }
+  },
+  ms: {
+    introTitle: "Apa Yang Anda Sukai?",
+    introDesc: "Soal selidik ringkas untuk membantu kami merancang aktiviti yang benar-benar anda nikmati. Tiada jawapan betul atau salah — jawab dengan jujur!",
+    introBtn: "Mulakan",
+    qCounter: (n, t) => `Soalan ${n} daripada ${t}`,
+    qNum: n => `SOALAN ${n}`,
+    navBack: "Kembali",
+    navNext: "Seterusnya",
+    navFinish: "Lihat Keputusan",
+    dimLabels: ["🎨 Kreativiti", "🧠 Pembelajaran", "🤝 Sosial"],
+    likertLabels: ["Tidak setuju", "Kurang setuju", "Neutral", "Agak setuju", "Setuju"],
+    scoreHeading: "SKOR ANDA",
+    dimNames: ["Kreativiti", "Pembelajaran", "Sosial"],
+    actHeading: "AKTIVITI YANG DICADANGKAN",
+    citeHeading: "Berdasarkan Kajian Saintifik",
+    retakeBtn: "Cuba Semula",
+    profiles: {
+      A:  { badge: "🎨 Si Pencipta",     title: "Si Pencipta",      desc: "Anda suka mencipta dan mengekspresikan diri. Aktiviti yang memberi kebebasan kreatif adalah pilihan anda." },
+      C:  { badge: "🧠 Si Pelajar",      title: "Si Pelajar",       desc: "Anda suka belajar perkara baru dan rasa pencapaian. Aktiviti yang mencabar minda membuat anda bersemangat." },
+      R:  { badge: "🤝 Si Sosial",       title: "Si Sosial",        desc: "Anda paling gembira bersama orang lain. Aktiviti berkumpulan adalah tempat kebahagiaan anda." },
+      AR: { badge: "🎨🤝 Pencipta Bersama", title: "Pencipta Bersama", desc: "Anda suka mencipta bersama-sama. Aktiviti kerjasama menonjolkan yang terbaik dalam diri anda." },
+      CR: { badge: "🧠🤝 Pelajar Sosial", title: "Pelajar Sosial",   desc: "Anda suka belajar dalam kumpulan, berkongsi pengetahuan dan idea bersama orang lain." },
+      AC: { badge: "🎨🧠 Pencapai Bebas", title: "Pencapai Bebas",   desc: "Anda menikmati cabaran kreatif yang boleh anda kuasai sendiri dan bangga dengan pencapaian anda." },
+      ALL:{ badge: "🌟 Serba Boleh",     title: "Serba Boleh",      desc: "Anda menikmati semua jenis aktiviti dengan sama rata. Mana-mana sesi pun bagus untuk anda!" }
+    },
+    activities: {
+      A:  ["Kraftangan & origami","Melukis & menggambar","Memasak & membakar","Susun bunga","Mengait & menjahit"],
+      C:  ["Permainan ingatan","Ceramah kesihatan","Permainan papan","Kuiz pengetahuan","Kemahiran digital ringkas"],
+      R:  ["Permainan berkumpulan","Menyanyi bersama","Berkongsi cerita","Lawatan komuniti","Kelas senaman ringan"],
+      AR: ["Memasak bersama","Kraftangan berkumpulan","Projek seni komuniti","Aktiviti pembinaan pasukan","Menghias bersama"],
+      CR: ["Kuiz berkumpulan","Pertandingan pengetahuan","Berkongsi tips kesihatan","Kumpulan perbincangan","Belajar kemahiran baru bersama"],
+      AC: ["Kraftangan solo dengan cabaran","Memasak langkah demi langkah","Menyusun teka-teki","Pembelajaran kendiri","Cabaran origami"],
+      ALL:["Apa sahaja aktiviti sesuai!","Kraftangan, permainan atau senaman","Tukar-tukar setiap sesi","Cuba sesuatu yang baru setiap minggu","Anda sangat mudah menyesuaikan diri!"]
+    }
+  },
+  ta: {
+    introTitle: "உங்களுக்கு என்ன பிடிக்கும்?",
+    introDesc: "உங்களுக்கு உண்மையிலேயே பிடித்த செயல்பாடுகளைத் திட்டமிட உதவும் ஒரு சிறிய கேள்வித்தாள். சரியான அல்லது தவறான பதில் இல்லை — நேர்மையாக பதிலளியுங்கள்!",
+    introBtn: "தொடங்கு",
+    qCounter: (n, t) => `கேள்வி ${n} / ${t}`,
+    qNum: n => `கேள்வி ${n}`,
+    navBack: "பின்னால்",
+    navNext: "அடுத்தது",
+    navFinish: "முடிவைக் காண்க",
+    dimLabels: ["🎨 படைப்பாற்றல்", "🧠 கற்றல்", "🤝 சமூகம்"],
+    likertLabels: ["உடன்படவில்லை", "சிறிது உடன்படவில்லை", "நடுநிலை", "சிறிது உடன்படுகிறேன்", "உடன்படுகிறேன்"],
+    scoreHeading: "உங்கள் மதிப்பெண்கள்",
+    dimNames: ["படைப்பாற்றல்", "கற்றல்", "சமூகம்"],
+    actHeading: "பரிந்துரைக்கப்பட்ட செயல்பாடுகள்",
+    citeHeading: "ஆராய்ச்சி அடிப்படையில்",
+    retakeBtn: "மீண்டும் எடு",
+    profiles: {
+      A:  { badge: "🎨 படைப்பாளி",     title: "படைப்பாளி",      desc: "நீங்கள் கைகளால் செய்வதையும் உருவாக்குவதையும் விரும்புகிறீர்கள். படைப்பு சுதந்திரம் தரும் செயல்பாடுகள் உங்களுக்கு மிகவும் பொருத்தமானவை." },
+      C:  { badge: "🧠 கற்பவர்",        title: "கற்பவர்",         desc: "புதியதைக் கற்று சாதிக்கும் உணர்வை விரும்புகிறீர்கள். சவாலான செயல்பாடுகள் உங்களை உற்சாகமாக வைக்கும்." },
+      R:  { badge: "🤝 சமூக நட்சத்திரம்", title: "சமூக நட்சத்திரம்", desc: "மற்றவர்களுடன் இருப்பதே உங்கள் மகிழ்ச்சி. குழு செயல்பாடுகள் உங்களுக்கு மிகவும் பொருத்தமானவை." },
+      AR: { badge: "🎨🤝 சேர்ந்து படைப்பவர்", title: "சேர்ந்து படைப்பவர்", desc: "மற்றவர்களுடன் சேர்ந்து செய்வதில் மகிழ்ச்சி கண்டீர்கள். கூட்டு செயல்பாடுகள் உங்களுக்கு சிறப்பானவை." },
+      CR: { badge: "🧠🤝 சமூகக் கற்பவர்", title: "சமூகக் கற்பவர்",  desc: "குழுவில் கற்பதை விரும்புகிறீர்கள். மற்றவர்களுடன் அறிவைப் பகிர்வது உங்களை ஊக்குவிக்கிறது." },
+      AC: { badge: "🎨🧠 சுயாதீன சாதகர்", title: "சுயாதீன சாதகர்",  desc: "தனியாக படைப்பு சவால்களை மேற்கொள்வதில் மகிழ்ச்சி கண்டீர்கள். உங்கள் சாதனையில் பெருமைப்படுகிறீர்கள்." },
+      ALL:{ badge: "🌟 பல்திறனாளி",     title: "பல்திறனாளி",     desc: "எல்லா வகை செயல்பாடுகளும் உங்களுக்கு சம அளவில் பிடிக்கும். எந்த நிகழ்வும் உங்களுக்கு நல்லதே!" }
+    },
+    activities: {
+      A:  ["கைவினை & ஒரிகாமி","ஓவியம் & வரைதல்","சமையல் & பேக்கிங்","மலர் அலங்காரம்","பின்னல் & தையல்"],
+      C:  ["நினைவாற்றல் விளையாட்டுகள்","உடல்நல பேச்சுகள்","பலகை விளையாட்டுகள்","அறிவு வினாடி வினா","எளிய டிஜிட்டல் திறன்கள்"],
+      R:  ["குழு விளையாட்டுகள்","ஒன்றாக பாடுதல்","கதை சொல்லும் வட்டம்","சமூக சுற்றுலா","இலேசான உடற்பயிற்சி வகுப்பு"],
+      AR: ["குழு சமையல்","கூட்டு கைவினை","சமூக கலை திட்டங்கள்","குழு உருவாக்கம்","அலங்கரிக்கும் நிகழ்வுகள்"],
+      CR: ["குழு வினாடி வினா","அறிவு போட்டிகள்","உடல்நல குறிப்புகள் பகிர்வு","கலந்துரையாடல் குழுக்கள்","புதிய திறன்கள் சேர்ந்து கற்றல்"],
+      AC: ["சவாலான தனி கைவினை","படிப்படியான சமையல்","புதிர் தீர்க்கல்","சுய கற்றல்","ஒரிகாமி சவால்கள்"],
+      ALL:["எந்த செயல்பாடும் பொருத்தமே!","கைவினை, விளையாட்டு அல்லது உடற்பயிற்சி","ஒவ்வொரு முறையும் மாற்றுங்கள்","ஒவ்வொரு வாரமும் புதிதை முயற்சியுங்கள்","நீங்கள் மிகவும் நெகிழ்வானவர்!"]
+    }
+  }
+};
+
+const QUESTIONS = {
+  en: [
+    "I enjoy making things with my hands.",
+    "I like activities where I can do things my own way.",
+    "I enjoy being creative — cooking, drawing, or crafting.",
+    "I like choosing what I want to make or do.",
+    "I feel satisfied when I create something from scratch.",
+    "I enjoy learning something new.",
+    "I like activities that are a little challenging.",
+    "I feel good when I complete something successfully.",
+    "I like knowing the reason behind how things work.",
+    "I enjoy activities that keep my mind sharp.",
+    "I enjoy chatting and laughing with others during activities.",
+    "I prefer doing things as a group rather than alone.",
+    "I feel happiest when I am surrounded by people.",
+    "I enjoy sharing stories or memories with others.",
+    "I like activities where everyone participates together."
+  ],
+  zh: [
+    "我喜欢用双手制作东西。",
+    "我喜欢可以按自己方式做事的活动。",
+    "我喜欢发挥创意——做饭、画画或手工。",
+    "我喜欢自己选择要做什么或制作什么。",
+    "当我从零开始创造出一件东西时，我感到满足。",
+    "我喜欢学习新东西。",
+    "我喜欢有一点挑战性的活动。",
+    "当我成功完成一件事时，我感到很好。",
+    "我喜欢了解事物背后的原理。",
+    "我喜欢能让思维保持活跃的活动。",
+    "我喜欢在活动中和大家聊天、笑闹。",
+    "我更喜欢和大家一起做事，而不是独自完成。",
+    "当我身边有很多人时，我感到最快乐。",
+    "我喜欢和他人分享故事或回忆。",
+    "我喜欢大家一起参与的活动。"
+  ],
+  ms: [
+    "Saya suka membuat sesuatu dengan tangan saya.",
+    "Saya suka aktiviti di mana saya boleh melakukan sesuatu dengan cara saya sendiri.",
+    "Saya suka menjadi kreatif — memasak, melukis, atau membuat kraftangan.",
+    "Saya suka memilih apa yang ingin saya buat atau lakukan.",
+    "Saya berasa puas apabila saya mencipta sesuatu dari mula.",
+    "Saya suka belajar sesuatu yang baru.",
+    "Saya suka aktiviti yang sedikit mencabar.",
+    "Saya berasa baik apabila berjaya menyiapkan sesuatu.",
+    "Saya suka mengetahui sebab di sebalik cara sesuatu berfungsi.",
+    "Saya suka aktiviti yang menajamkan minda saya.",
+    "Saya suka berbual dan ketawa bersama orang lain semasa aktiviti.",
+    "Saya lebih suka melakukan sesuatu dalam kumpulan daripada bersendirian.",
+    "Saya paling gembira apabila dikelilingi orang ramai.",
+    "Saya suka berkongsi cerita atau kenangan dengan orang lain.",
+    "Saya suka aktiviti di mana semua orang menyertai bersama."
+  ],
+  ta: [
+    "என் கைகளால் எதையாவது செய்வதில் மகிழ்ச்சி அடைகிறேன்.",
+    "என் சொந்த விதத்தில் செய்யக்கூடிய செயல்பாடுகளை விரும்புகிறேன்.",
+    "படைப்பாற்றலுடன் இருப்பதை விரும்புகிறேன் — சமையல், ஓவியம் அல்லது கைவினை.",
+    "நான் என்ன செய்ய விரும்புகிறேன் என்று தேர்ந்தெடுப்பது பிடிக்கும்.",
+    "ஒன்றை புதிதாக உருவாக்கும்போது மனநிறைவு அடைகிறேன்.",
+    "புதியதை கற்றுக்கொள்வதில் மகிழ்ச்சி அடைகிறேன்.",
+    "சிறிது சவாலான செயல்பாடுகளை விரும்புகிறேன்.",
+    "ஒன்றை வெற்றிகரமாக முடிக்கும்போது நல்லாக உணர்கிறேன்.",
+    "விஷயங்கள் எப்படி இயங்குகின்றன என்பதன் காரணம் அறிய விரும்புகிறேன்.",
+    "மனதை சுறுசுறுப்பாக வைக்கும் செயல்பாடுகளை விரும்புகிறேன்.",
+    "செயல்பாடுகளின்போது மற்றவர்களுடன் பேசி சிரிப்பதில் மகிழ்ச்சி அடைகிறேன்.",
+    "தனியாக செய்வதை விட குழுவாக செய்வதை விரும்புகிறேன்.",
+    "மக்களுடன் இருக்கும்போதே அதிகம் மகிழ்ச்சியடைகிறேன்.",
+    "மற்றவர்களுடன் கதைகள் அல்லது நினைவுகளைப் பகிர்வதில் மகிழ்ச்சி அடைகிறேன்.",
+    "அனைவரும் ஒன்றாக பங்கேற்கும் செயல்பாடுகளை விரும்புகிறேன்."
+  ]
+};
+
+const DIM_DIMS = ["autonomy","competence","relatedness"];
+const DIM_MAP = [0,0,0,0,0,1,1,1,1,1,2,2,2,2,2];
+
+let lang = 'en';
+let currentQ = 0;
+let answers = new Array(15).fill(0);
+
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.lang-btn').forEach(b => { if(b.textContent.trim() === {en:'English',zh:'中文',ms:'Bahasa Melayu',ta:'தமிழ்'}[l]) b.classList.add('active'); });
+  applyLang();
+}
+
+function applyLang() {
+  const L = LANGS[lang];
+  document.getElementById('intro-title').textContent = L.introTitle;
+  document.getElementById('intro-desc').textContent = L.introDesc;
+  document.getElementById('intro-btn').textContent = L.introBtn;
+  if(document.getElementById('page-survey').classList.contains('active')) renderQuestion();
+}
+
+function startSurvey() {
+  currentQ = 0;
+  answers = new Array(15).fill(0);
+  showPage('page-survey');
+  renderQuestion();
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function renderQuestion() {
+  const L = LANGS[lang];
+  const Q = QUESTIONS[lang];
+  const i = currentQ;
+  const total = 15;
+  const pct = Math.round((i / total) * 100);
+
+  document.getElementById('q-counter').textContent = L.qCounter(i+1, total);
+  document.getElementById('q-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  const dim = DIM_MAP[i];
+  const pill = document.getElementById('dim-pill');
+  pill.textContent = L.dimLabels[dim];
+  pill.className = 'dim-pill ' + ['dim-autonomy','dim-competence','dim-relatedness'][dim];
+
+  document.getElementById('q-num').textContent = L.qNum(i+1);
+  document.getElementById('q-text').textContent = Q[i];
+
+  for(let v=1;v<=5;v++) {
+    document.getElementById('r'+v).checked = answers[i] === v;
+    document.getElementById('lbl-'+v).textContent = L.likertLabels[v-1];
+  }
+
+  document.getElementById('btn-back').disabled = i === 0;
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.querySelector('#nav-next-lbl').textContent = i === total-1 ? L.navFinish : L.navNext;
+  document.getElementById('nav-back-lbl').textContent = L.navBack;
+  nextBtn.disabled = answers[i] === 0;
+
+  document.querySelectorAll('input[name="answer"]').forEach(r => {
+    r.onchange = () => {
+      answers[currentQ] = parseInt(r.value);
+      document.getElementById('btn-next').disabled = false;
+    };
+  });
+}
+
+function goNext() {
+  if(answers[currentQ] === 0) return;
+  if(currentQ === 14) { showResults(); return; }
+  currentQ++;
+  renderQuestion();
+}
+
+function goBack() {
+  if(currentQ === 0) return;
+  currentQ--;
+  renderQuestion();
+}
+
+function showResults() {
+  const L = LANGS[lang];
+  let scoreA = 0, scoreC = 0, scoreR = 0;
+  for(let i=0;i<5;i++) scoreA += answers[i];
+  for(let i=5;i<10;i++) scoreC += answers[i];
+  for(let i=10;i<15;i++) scoreR += answers[i];
+
+  const maxScore = 25;
+  const pctA = Math.round((scoreA/maxScore)*100);
+  const pctC = Math.round((scoreC/maxScore)*100);
+  const pctR = Math.round((scoreR/maxScore)*100);
+
+  const threshold = 3;
+  const highA = scoreA >= 20, highC = scoreC >= 20, highR = scoreR >= 20;
+  const diff = Math.max(scoreA, scoreC, scoreR) - Math.min(scoreA, scoreC, scoreR);
+
+  let profileKey;
+  if(diff <= 3) profileKey = 'ALL';
+  else if(highA && highC && highR) profileKey = 'ALL';
+  else if(highA && highR && !highC) profileKey = 'AR';
+  else if(highC && highR && !highA) profileKey = 'CR';
+  else if(highA && highC && !highR) profileKey = 'AC';
+  else if(scoreA >= scoreC && scoreA >= scoreR) profileKey = 'A';
+  else if(scoreC >= scoreA && scoreC >= scoreR) profileKey = 'C';
+  else profileKey = 'R';
+
+  const prof = L.profiles[profileKey];
+  const acts = L.activities[profileKey];
+
+  const badge = document.getElementById('result-badge');
+  badge.textContent = prof.badge;
+  badge.style.background = {A:'var(--purple-light)',C:'var(--coral-light)',R:'var(--teal-light)',AR:'var(--purple-light)',CR:'var(--teal-light)',AC:'var(--coral-light)',ALL:'var(--amber-light)'}[profileKey];
+  badge.style.color = {A:'var(--purple)',C:'var(--coral)',R:'var(--teal)',AR:'var(--purple)',CR:'var(--teal)',AC:'var(--coral)',ALL:'var(--amber)'}[profileKey];
+
+  document.getElementById('result-title').textContent = prof.title;
+  document.getElementById('result-desc').textContent = prof.desc;
+
+  document.getElementById('score-heading').textContent = L.scoreHeading;
+  document.getElementById('dim-a-label').textContent = L.dimNames[0];
+  document.getElementById('dim-c-label').textContent = L.dimNames[1];
+  document.getElementById('dim-r-label').textContent = L.dimNames[2];
+
+  document.getElementById('act-heading').textContent = L.actHeading;
+  document.getElementById('cite-heading').textContent = L.citeHeading;
+  document.getElementById('retake-btn').textContent = L.retakeBtn;
+
+  showPage('page-result');
+
+  setTimeout(() => {
+    document.getElementById('bar-a').style.width = pctA + '%';
+    document.getElementById('bar-c').style.width = pctC + '%';
+    document.getElementById('bar-r').style.width = pctR + '%';
+    document.getElementById('pct-a').textContent = pctA + '%';
+    document.getElementById('pct-c').textContent = pctC + '%';
+    document.getElementById('pct-r').textContent = pctR + '%';
+  }, 100);
+
+  const chipColors = {
+    A:  {bg:'var(--purple-light)',color:'var(--purple)',border:'var(--purple)'},
+    C:  {bg:'var(--coral-light)', color:'var(--coral)', border:'var(--coral)'},
+    R:  {bg:'var(--teal-light)',  color:'var(--teal)',  border:'var(--teal)'},
+    AR: {bg:'var(--purple-light)',color:'var(--purple)',border:'var(--purple)'},
+    CR: {bg:'var(--teal-light)',  color:'var(--teal)',  border:'var(--teal)'},
+    AC: {bg:'var(--coral-light)', color:'var(--coral)', border:'var(--coral)'},
+    ALL:{bg:'var(--amber-light)', color:'var(--amber)', border:'var(--amber)'}
+  };
+  const cc = chipColors[profileKey];
+  const chipsEl = document.getElementById('activity-chips');
+  chipsEl.innerHTML = '';
+  acts.forEach(a => {
+    const chip = document.createElement('span');
+    chip.className = 'chip';
+    chip.textContent = a;
+    chip.style.background = cc.bg;
+    chip.style.color = cc.color;
+    chip.style.borderColor = cc.border;
+    chipsEl.appendChild(chip);
+  });
+}
+
+function retake() {
+  currentQ = 0;
+  answers = new Array(15).fill(0);
+  showPage('page-survey');
+  renderQuestion();
+}
+</script>
+</body>
+</html>
